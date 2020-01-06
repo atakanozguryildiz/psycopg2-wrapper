@@ -55,6 +55,6 @@ class Database(object):
             self._close_cursor(cursor)
             self._put_connection(connection)
             return all_data
-        self._close_cursor(crs)
-        self._put_connection(con)
+        self._close_cursor(cursor)
+        self._put_connection(connection)
         return True
