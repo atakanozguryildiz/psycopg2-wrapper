@@ -14,6 +14,6 @@ pip install psycopg2-wrapper
 <p>For usage: </p>
 <pre>
 from psycopg2_wrapper.database import Database
-database = Database(host='', database='', user='', password='')
-database.execute_query('select * from user where id=%s', (1,))
+database = Database(host='host_name', database='db_name', user='db_user', password='db_password')
+result = database.execute_query('select * from user where id=%s', (1,))
 </pre>
