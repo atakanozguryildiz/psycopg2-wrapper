@@ -1,5 +1,7 @@
 from psycopg2 import pool
 
+from validator import is_crud
+
 
 class Database(object):
 
@@ -47,14 +49,32 @@ class Database(object):
 
     def execute_query(self, query, params=None):
         connection = self._get_connection()
+        if not is_crud(query):
+            connection.autocommit = True
+            return self._execute_with_autocommit(connection, query, params)
+        return self._execute_without_autocommit(connection, query, params)
+
+    def _execute_with_autocommit(self, connection, query, params):
+        cursor = self._create_cursor(connection)
+        cursor.execute(query, params)
+        if cursor.description:
+            all_data = cursor.fetchall()
+            self._close_cursor_connection(cursor, connection)
+            return all_data
+        self._close_cursor_connection(cursor, connection)
+        return True
+
+    def _execute_without_autocommit(self, connection, query, params):
         cursor = self._create_cursor(connection)
         cursor.execute(query, params)
         connection.commit()
         if cursor.description:
             all_data = cursor.fetchall()
-            self._close_cursor(cursor)
-            self._put_connection(connection)
+            self._close_cursor_connection(cursor, connection)
             return all_data
+        self._close_cursor_connection(cursor, connection)
+        return True
+
+    def _close_cursor_connection(self, cursor, connection):
         self._close_cursor(cursor)
         self._put_connection(connection)
-        return True

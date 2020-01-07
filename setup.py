@@ -7,7 +7,7 @@ with open('requirements.txt') as f:
 with open('README.md', 'r') as fh:
     long_description = fh.read()
 
-version = '0.1'
+version = '1.0'
 
 setuptools.setup(
     name='psycopg2_wrapper',
